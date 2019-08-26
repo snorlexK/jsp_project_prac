@@ -69,5 +69,13 @@ function register_check() {
 		password.focus();
 		return;
 	}
+	if(email_double_check == false) {
+		alert("이메일 중복 확인을 진행해주세요.");
+		return;
+	}
+	if(nickname_double_check == false) {
+		alert("닉네임 중복 확인을 진행해주세요.");
+		return;
+	}
 	document.register.submit();
 }

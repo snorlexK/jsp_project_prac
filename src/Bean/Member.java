@@ -135,6 +135,78 @@ public class Member {
 		return referer_email;
 	}
 	
+	public boolean email_double_check(String email) {
+		// 이메일 중복 확인 메스드
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		boolean check = false;
+		
+		try {
+			conn = DriverManager.getConnection(jdbc_url, db_id, db_pwd);
+			
+			String sql = "select email from member where email=?";
+			// 입력된 이메일과 똑같은 이메일이 이미 존재하는지 검색
+			
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, email);
+			
+			rs = pstmt.executeQuery();
+			
+			rs.next();
+			String email_sql = rs.getString("email");
+			
+			if(!email_sql.equals(email)) {
+				check = true;
+			}
+		} catch(SQLException sqle) {
+			sqle.printStackTrace();
+		} finally {
+			if(pstmt!=null)
+				try{pstmt.close();}catch(SQLException sqle){}
+			if(conn!=null)
+				try{conn.close();}catch(SQLException sqle){}
+		}
+		
+		return check; 
+	}
+	
+	public boolean nickname_double_check(String nickname) {
+		// 이메일 중복 확인 메스드
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		boolean check = false;
+		
+		try {
+			conn = DriverManager.getConnection(jdbc_url, db_id, db_pwd);
+			
+			String sql = "select nickname from member where nickname=?";
+			// 입력된 이메일과 똑같은 이메일이 이미 존재하는지 검색
+			
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, nickname);
+			
+			rs = pstmt.executeQuery();
+			
+			rs.next();
+			String nickname_sql = rs.getString("nickname");
+			
+			if(!nickname_sql.equals(nickname)) {
+				check = true;
+			}
+		} catch(SQLException sqle) {
+			sqle.printStackTrace();
+		} finally {
+			if(pstmt!=null)
+				try{pstmt.close();}catch(SQLException sqle){}
+			if(conn!=null)
+				try{conn.close();}catch(SQLException sqle){}
+		}
+		
+		return check; 
+	}
+	
 	public void delete_member(MemberBean member) {
 		// 회원탈퇴 메소드
 		Connection conn = null;
@@ -194,7 +266,7 @@ public class Member {
 	}
 	
 	public String find_password(MemberBean member) {
-		// 이메일 찾기 메소드
+		// 비밀번호 찾기 메소드
 		Connection conn = null;
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
@@ -203,10 +275,11 @@ public class Member {
 		try {
 			conn = DriverManager.getConnection(jdbc_url, db_id, db_pwd);
 			
-			String sql = "select password from member where email=?";
+			String sql = "select password from member where email=? and phone=?";
 			
 			pstmt = conn.prepareStatement(sql);
 			pstmt.setString(1, member.getEmail());
+			pstmt.setString(2, member.getPhone());
 			
 			rs = pstmt.executeQuery();
 			
